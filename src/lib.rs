@@ -8,11 +8,10 @@ macro_rules! match_fallthrough_make_match {
 }
 
 #[macro_export]
-#[allow(unreachable_code)]
 macro_rules! match_fallthrough_make_loops {
     ($test:expr, $exit:expr, ($pat:pat => $branch:expr); ($($p:pat => $r:expr)*)) => {{
         'fallthrough: loop {
-            'exit: loop {
+            loop {
                 match_fallthrough_make_match!($test, ($pat => break 'fallthrough $($p => $r)*));
             }
             $exit
@@ -21,7 +20,7 @@ macro_rules! match_fallthrough_make_loops {
     }};
     ($test:expr, $exit:expr, ($pat:pat => $branch:expr, $($pu:pat => $bu:expr),+) ; ($($p:pat => $r:expr)*)) => {{
         'fallthrough: loop {
-            'exit: loop {
+            loop {
                 match_fallthrough_make_loops!($test, $exit, ($($pu => $bu),+) ; ($pat => break 'fallthrough $($p => $r)*));
                 break 'fallthrough
             }
@@ -32,7 +31,6 @@ macro_rules! match_fallthrough_make_loops {
 }
 
 #[macro_export]
-#[allow(unreachable_code)]
 macro_rules! match_fallthrough_reverse_branches {
     ($test:expr, ($pat:pat => $branch:expr); ($($p:pat => $r:expr)*)) => {{
         'exit: loop {
@@ -46,7 +44,6 @@ macro_rules! match_fallthrough_reverse_branches {
 }
 
 #[macro_export]
-#[allow(unreachable_code)]
 macro_rules! match_fallthrough {
     ($test:expr, { $( $pat:pat => $branch:expr ),+ } ) => {{
         match_fallthrough_reverse_branches!($test, ($($pat => $branch),+); ())
